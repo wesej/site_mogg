@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="ru" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Автономная мобильная платформа для внутрицеховой логистики — 4WD Mecanum</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            carbon: '#111111',
+            graphite: '#1b1b1e',
+            panel: '#242429',
+            robo: '#ff6600',
+            roboHover: '#e65c00',
+            silver: '#a1a1aa'
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #111111;
+      color: #ffffff;
+      font-family: 'Inter', sans-serif;
+    }
+    /* Ползунки калькулятора в стиле robo74.ru */
+    input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 8px;
+      background: #2e2e36;
+      border-radius: 999px;
+      outline: none;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #ff6600;
+      border: 3px solid #ffffff;
+      cursor: pointer;
+      transition: transform 0.15s ease;
+    }
+    input[type="range"]::-webkit-slider-thumb:hover {
+      transform: scale(1.12);
+    }
+    .grid-bg {
+      background-image: 
+        linear-gradient(to right, rgba(255, 102, 0, 0.06) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 102, 0, 0.06) 1px, transparent 1px);
+      background-size: 36px 36px;
+    }
+    [contenteditable="true"]:focus {
+      outline: 2px dashed #ff6600;
+      outline-offset: 3px;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body class="bg-carbon text-white selection:bg-robo selection:text-carbon antialiased">
+
+  <!-- НАВИГАЦИОННАЯ ПАНЕЛЬ (только логотип «Т» и ссылки по разделам) -->
+  <header class="sticky top-0 z-50 bg-carbon/95 backdrop-blur-md border-b border-zinc-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      <!-- Чистый векторный логотип «Т» без лишних надписей -->
+      <a href="#hero" class="flex items-center gap-3 group" aria-label="На главную">
+        <svg width="44" height="44" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" class="rounded-lg shadow-lg group-hover:scale-105 transition-transform flex-shrink-0">
+          <rect width="100" height="100" fill="#ff6600"/>
+          <polygon points="18,20 46,20 31,35 18,35" fill="#111111"/>
+          <polygon points="55,20 82,20 82,35 58,35 58,82 42,82 42,33" fill="#111111"/>
+        </svg>
+      </a>
+
+      <!-- Навигационные ссылки по разделам -->
+      <nav class="flex flex-wrap items-center gap-4 sm:gap-7 text-xs sm:text-sm font-semibold text-zinc-300">
+        <a href="#problem" class="hover:text-robo transition-colors">Проблема и Решение</a>
+        <a href="#engineering" class="hover:text-robo transition-colors">Архитектура и Расчёты</a>
+        <a href="#competitors" class="hover:text-robo transition-colors">Конкуренты</a>
+        <a href="#calculator" class="hover:text-robo transition-colors">Экономика</a>
+        <a href="#resources" class="hover:text-robo transition-colors">Ресурсы и Рынок</a>
+        <a href="#team" class="hover:text-robo transition-colors">Команда</a>
+        <a href="#contact" class="hover:text-robo transition-colors">Контакты</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- 1. ГЛАВНЫЙ ЭКРАН (HERO) -->
+  <section id="hero" class="relative overflow-hidden py-12 lg:py-20 border-b border-zinc-800 grid-bg">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+        
+        <!-- Левая колонка: Заголовок, подзаголовок и 4 ключевые плашки -->
+        <div class="lg:col-span-7 space-y-6">
+          <div class="inline-flex items-center gap-2.5 bg-graphite border border-robo/40 rounded-full px-4 py-1.5">
+            <span class="w-2.5 h-2.5 rounded-full bg-robo"></span>
+            <span class="text-xs sm:text-sm font-mono font-semibold text-robo">Промышленная робототехника и внутрицеховая логистика • 2026</span>
+          </div>
+
+          <h1 class="text-3xl sm:text-5xl font-black tracking-tight text-white leading-[1.14]">
+            Автономная мобильная платформа для внутрицеховой логистики
+          </h1>
+
+          <p class="text-base sm:text-lg text-zinc-300 leading-relaxed">
+            Компактная полноприводная платформа 4WD на колёсах Илона (Mecanum) со стереокамерой <span class="text-white font-semibold">OpenCV</span>, управлением через цеховой <span class="text-white font-semibold">Wi-Fi роутер (SSH)</span> и готовностью работать в едином цикле с манипулятором.
+          </p>
+
+          <!-- 4 Ключевые плашки по ТЗ -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3.5 pt-2">
+            <div class="bg-graphite/95 border border-zinc-800 rounded-xl p-4">
+              <div class="text-xl sm:text-2xl font-black text-robo">40 000 руб.</div>
+              <div class="text-xs text-zinc-300 mt-1">Себестоимость платформы 4WD</div>
+            </div>
+            <div class="bg-graphite/95 border border-zinc-800 rounded-xl p-4">
+              <div class="text-xl sm:text-2xl font-black text-white">&lt; 1 мес.</div>
+              <div class="text-xs text-zinc-300 mt-1">Окупаемость одной машинки</div>
+            </div>
+            <div class="bg-graphite/95 border border-zinc-800 rounded-xl p-4">
+              <div class="text-xl sm:text-2xl font-black text-robo">PETG 10x</div>
+              <div class="text-xs text-zinc-300 mt-1">Запас прочности корпуса (38 МПа)</div>
+            </div>
+            <div class="bg-graphite/95 border border-zinc-800 rounded-xl p-4">
+              <div class="text-xl sm:text-2xl font-black text-white">15 минут</div>
+              <div class="text-xs text-zinc-300 mt-1">Модульный ремонт узлов без пайки</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Правая колонка: Блок «Место для фото машинки» с локальной загрузкой -->
+        <div class="lg:col-span-5">
+          <div class="bg-graphite border-2 border-robo/70 rounded-2xl p-5 shadow-2xl">
+            <div class="flex items-center justify-between mb-3 pb-3 border-b border-zinc-800">
+              <span class="text-xs font-mono uppercase tracking-wider text-robo font-bold" id="showcaseTitle">
+                Место для фото машинки
+              </span>
+              <span class="text-xs font-mono bg-carbon text-zinc-300 px-2.5 py-1 rounded border border-zinc-800">
+                4WD Mecanum • 4 кг
+              </span>
+            </div>
+
+            <!-- Рамка для отображения фотографии -->
+            <div class="relative w-full h-72 sm:h-80 bg-carbon rounded-xl border-2 border-dashed border-robo/60 flex items-center justify-center overflow-hidden">
+              <!-- Заглушка до загрузки фото -->
+              <div id="photoPlaceholder" class="text-center p-6 space-y-3">
+                <div class="w-14 h-14 rounded-2xl bg-graphite border border-robo/40 flex items-center justify-center mx-auto text-robo">
+                  <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/>
+                  </svg>
+                </div>
+                <div class="text-lg font-extrabold text-robo">Место для фото машинки</div>
+                <p class="text-xs sm:text-sm text-zinc-400 max-w-xs mx-auto">
+                  Выберите файл фотографии готовой автономной мобильной платформы 4WD — он сразу отобразится в этой рамке
+                </p>
+              </div>
+
+              <!-- Отображаемое фото после выбора файла -->
+              <img id="uploadedRobotImg" src="" alt="Фото мобильной платформы 4WD" class="hidden w-full h-full object-contain bg-carbon p-2"/>
+            </div>
+
+            <!-- Кнопка выбора локального файла фотографии -->
+            <div class="mt-4 flex flex-wrap items-center justify-between gap-3">
+              <label class="cursor-pointer bg-robo hover:bg-roboHover text-carbon font-extrabold text-xs sm:text-sm px-4 py-2.5 rounded-xl transition-all inline-flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+                </svg>
+                <span>Выбрать фото машинки</span>
+                <input type="file" id="robotPhotoInput" accept="image/*" class="hidden">
+              </label>
+
+              <button id="resetPhotoBtn" type="button" class="hidden text-xs font-mono text-zinc-400 hover:text-white underline">
+                Сбросить фото
+              </button>
+
+              <span class="text-xs font-mono text-zinc-400">
+                Шасси: 400×250 мм
+              </span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. ПРОБЛЕМА И РЕШЕНИЕ -->
+  <section id="problem" class="py-16 lg:py-24 border-b border-zinc-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+      
+      <div class="max-w-3xl">
+        <span class="text-robo font-mono text-sm font-bold uppercase tracking-wider">Раздел 1 • Проблема и Решение</span>
+        <h2 class="text-3xl sm:text-4xl font-black text-white mt-2">
+          Актуальность разработки компактной платформы 4WD
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        
+        <!-- Проблема -->
+        <div class="bg-graphite border border-zinc-800 rounded-2xl p-6 sm:p-8 space-y-5">
+          <div class="flex items-center justify-between border-b border-zinc-800 pb-4">
+            <h3 class="text-xl font-extrabold text-white">Проблема</h3>
+            <span class="bg-red-500/10 text-red-400 border border-red-500/30 text-xs font-mono font-bold px-3 py-1 rounded-full">
+              Потери 65 000 – 80 000 руб./мес.
+            </span>
+          </div>
+
+          <ul class="space-y-4 text-sm sm:text-base text-zinc-300">
+            <li class="flex gap-3">
+              <span class="text-robo font-mono font-bold">01.</span>
+              <span><strong class="text-white">Высокая стоимость коммерческих AMR-роботов:</strong> готовые промышленные платформы стоят от <strong class="text-white">1 400 000 до 3 500 000 руб.</strong>, что делает их нерентабельными для средних и малых производственных участков.</span>
+            </li>
+            <li class="flex gap-3">
+              <span class="text-robo font-mono font-bold">02.</span>
+              <span><strong class="text-white">Избыточная грузоподъёмность (300–500 кг):</strong> тяжёлые складские роботы имеют большие габариты и избыточны для внутрицеховой транспортировки лёгких деталей, шильдиков и приборных плашек.</span>
+            </li>
+            <li class="flex gap-3">
+              <span class="text-robo font-mono font-bold">03.</span>
+              <span><strong class="text-white">Закрытое ПО и зависимость от сервиса:</strong> для изменения маршрута движения или ремонта проприетарных узлов предприятиям приходится вызывать платного сервисного инженера поставщика.</span>
+            </li>
+            <li class="flex gap-3">
+              <span class="text-robo font-mono font-bold">04.</span>
+              <span><strong class="text-white">Прямые финансовые потери цеха:</strong> затраты ФОТ на ручную подачу и разноску лотков составляют <strong class="text-white">55 000 – 65 000 руб./мес.</strong> (с взносами), плюс <strong class="text-white">10 000 – 15 000 руб./мес.</strong> потерь на браке и пересортице партий.</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Решение -->
+        <div class="bg-panel border-2 border-robo rounded-2xl p-6 sm:p-8 space-y-5">
+          <div class="flex items-center justify-between border-b border-zinc-700 pb-4">
+            <h3 class="text-xl font-extrabold text-robo">Решение</h3>
+            <span class="bg-robo text-carbon text-xs font-mono font-extrabold px-3 py-1 rounded-full">
+              Себестоимость 40 000 руб.
+            </span>
+          </div>
+
+          <ul class="space-y-4 text-sm sm:text-base text-zinc-200">
+            <li class="flex gap-3">
+              <span class="text-robo font-mono font-bold">01.</span>
+              <span><strong class="text-white">Компактная платформа 4WD (масса 4 кг):</strong> всенаправленные колёса Илона (Mecanum) на шаговых приводах <strong class="text-white">NEMA 17</strong> и малошумных драйверах <strong class="text-white">TMC2209</strong> (режим StealthChop, микрошаг 1/16, 3200 шагов/об).</span>
+            </li>
+            <li class="flex gap-3">
+              <span class="text-robo font-mono font-bold">02.</span>
+              <span><strong class="text-white">Стереовизуальная и сенсорная навигация:</strong> бортовая стереокамера с алгоритмами <strong class="text-white">OpenCV (StereoBM / StereoSGBM)</strong> для построения карты глубины + круговой <strong class="text-white">лидар 360°</strong> + 4 УЗ-сонара <strong class="text-white">HC-SR04</strong> + IMU <strong class="text-white">MPU-6050</strong>.</span>
+            </li>
+            <li class="flex gap-3">
+              <span class="text-robo font-mono font-bold">03.</span>
+              <span><strong class="text-white">Связь и собственное приложение настройки:</strong> основная работа через цеховой <strong class="text-white">Wi-Fi роутер (по SSH)</strong> + резервный аварийный радиоканал <strong class="text-white">LoRa Meshtastic (868 МГц)</strong>. Оператор сам задаёт путевые точки, скорости и рампу разгона в приложении.</span>
+            </li>
+            <li class="flex gap-3">
+              <span class="text-robo font-mono font-bold">04.</span>
+              <span><strong class="text-white">Масштабирование в рой и работа с манипулятором:</strong> поддержка запуска роя из нескольких машинок и полная готовность к работе в едином цикле с манипулятором по JSON-протоколу.</span>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. ИНЖЕНЕРНАЯ АРХИТЕКТУРА И РАСЧЁТЫ (3 ВКЛАДКИ ПО ДОКУМЕНТАЦИИ) -->
+  <section id="engineering" class="py-16 lg:py-24 border-b border-zinc-800 bg-graphite/30">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+      
+      <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+        <div>
+          <span class="text-robo font-mono text-sm font-bold uppercase tracking-wider">Раздел 2 • Техническая документация</span>
+          <h2 class="text-3xl sm:text-4xl font-black text-white mt-1">
+            Инженерная архитектура, расчёты и чертежи САПР
+          </h2>
+        </div>
+
+        <!-- Кнопки переключения 3 вкладок -->
+        <div class="flex flex-wrap gap-2.5">
+          <button type="button" onclick="switchTechTab('calc')" id="tabBtn-calc" class="px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm bg-robo text-carbon transition">
+            Вкладка 1: Расчёты приводов и питания
+          </button>
+          <button type="button" onclick="switchTechTab('stm32')" id="tabBtn-stm32" class="px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm bg-graphite text-zinc-300 border border-zinc-800 hover:text-white transition">
+            Вкладка 2: Распиновка STM32 и питание
+          </button>
+          <button type="button" onclick="switchTechTab('cad')" id="tabBtn-cad" class="px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm bg-graphite text-zinc-300 border border-zinc-800 hover:text-white transition">
+            Вкладка 3: КОМПАС-3D и цикл с манипулятором
+          </button>
+        </div>
+      </div>
+
+      <!-- ВКЛАДКА 1: Расчёты приводов, тепловой режим, энергобаланс и прочность PETG -->
+      <div id="tabContent-calc" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        
+        <!-- Карточка 1: Тяга и моменты -->
+        <div class="bg-graphite border border-zinc-800 rounded-2xl p-6 space-y-3">
+          <div class="text-xs font-mono text-robo uppercase font-bold">1. Тяговый и динамический расчёт</div>
+          <h3 class="text-lg font-extrabold text-white">Сила тяги и запас моторов NEMA 17</h3>
+          <ul class="space-y-2 text-sm text-zinc-300">
+            <li>• <strong>Масса платформы:</strong> <span class="font-mono text-white">m = 4 кг</span> (вес <span class="font-mono text-white">P = 39.2 Н</span>).</li>
+            <li>• <strong>Сила сопротивления качению:</strong> <span class="font-mono text-white">Fкач = 2 Н</span> (коэффициент <span class="font-mono text-white">f = 0.05</span> для роликов Mecanum под углом 45°).</li>
+            <li>• <strong>Сила разгона (при a = 1 м/с²):</strong> <span class="font-mono text-white">Fразг = 4 Н</span> → суммарная сила тяги <span class="font-mono text-robo font-bold">Fтяг = 6 Н</span>.</li>
+            <li>• <strong>Требуемый крутящий момент (R = 0.04 м):</strong> <span class="font-mono text-white">Mобщ = 0.24 Н·м</span> (по <span class="font-mono text-white">6 Н·см</span> на каждый из 4 приводов).</li>
+            <li>• <strong>4-кратный запас по моменту:</strong> статический момент NEMA 17 (17HS4401) — <span class="font-mono text-white">45 Н·см</span>, динамический на рабочих оборотах — <span class="font-mono text-robo font-bold">20–25 Н·см</span>.</li>
+          </ul>
+        </div>
+
+        <!-- Карточка 2: Скоростные режимы и тепловой расчёт TMC2209 -->
+        <div class="bg-graphite border border-zinc-800 rounded-2xl p-6 space-y-3">
+          <div class="text-xs font-mono text-robo uppercase font-bold">2. Скорость и тепловой режим</div>
+          <h3 class="text-lg font-extrabold text-white">Обороты и драйверы TMC2209</h3>
+          <ul class="space-y-2 text-sm text-zinc-300">
+            <li>• <strong>Режим при питании 12 В:</strong> стабильный предел без срыва шагов — <span class="font-mono text-robo font-bold">~350 об/мин</span> (5–6.6 об/сек).</li>
+            <li>• <strong>Режим при питании 24 В:</strong> подавление противо-ЭДС увеличивает предел до <span class="font-mono text-robo font-bold">~600 об/мин</span> (8.3–11.6 об/сек).</li>
+            <li>• <strong>Ток драйверов TMC2209:</strong> опорное напряжение <span class="font-mono text-white">Vref = 0.75 В</span> задаёт рабочий фазный ток <span class="font-mono text-white">I = 0.60 А</span>.</li>
+            <li>• <strong>Тепловой баланс:</strong> статическая мощность рассеяния на силовых ключах — <span class="font-mono text-white">0.12 Вт</span> на модуль, рабочая температура с радиатором — <span class="font-mono text-emerald-400 font-bold">35–40 °C</span>.</li>
+          </ul>
+        </div>
+
+        <!-- Карточка 3: Энергобаланс и прочность корпуса PETG -->
+        <div class="bg-graphite border border-zinc-800 rounded-2xl p-6 space-y-3">
+          <div class="text-xs font-mono text-robo uppercase font-bold">3. Энергобаланс и прочность PETG</div>
+          <h3 class="text-lg font-extrabold text-white">АКБ Tattu 4S и шасси из PETG</h3>
+          <ul class="space-y-2 text-sm text-zinc-300">
+            <li>• <strong>Энергопотребление борта:</strong> <span class="font-mono text-white">38–42 Вт</span> в непрерывном движении (<span class="font-mono text-white">26–28 Вт</span> в среднем цикле с паузами).</li>
+            <li>• <strong>Аккумулятор:</strong> LiPo <span class="font-mono text-robo font-bold">Tattu FunFly 4S</span> (14.8 В, 1550 мА·ч, 22.94 Вт·ч, 100C) — <span class="font-mono text-white">30 мин</span> непрерывно и <span class="font-mono text-white">45 мин</span> в рабочем цикле.</li>
+            <li>• <strong>Прочность корпуса PETG:</strong> изгибающий момент в лонжеронах — <span class="font-mono text-white">3.2 Н·м</span>, напряжение изгиба — <span class="font-mono text-white">3.5 МПа</span> при пределе текучести <span class="font-mono text-robo font-bold">38 МПа (запас прочности &gt; 10x)</span>, прогиб <span class="font-mono text-white">&lt; 0.5 мм</span>.</li>
+          </ul>
+        </div>
+
+      </div>
+
+      <!-- ВКЛАДКА 2: Полная таблица распиновки STM32F401CEU6 и разводка питания -->
+      <div id="tabContent-stm32" class="hidden grid-cols-1 lg:grid-cols-12 gap-8">
+        <div class="lg:col-span-8 bg-graphite border border-zinc-800 rounded-2xl p-6 overflow-x-auto">
+          <h3 class="text-lg font-extrabold text-robo mb-4">Полная таблица распиновки микроконтроллера STM32F401CEU6</h3>
+          <table class="w-full text-left border-collapse font-mono text-xs sm:text-sm">
+            <thead>
+              <tr class="border-b border-zinc-700 text-zinc-400">
+                <th class="py-2.5 pr-4">Вывод STM32</th>
+                <th class="py-2.5 pr-4">Сигнал</th>
+                <th class="py-2.5">Функциональное назначение</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-zinc-800 text-zinc-200">
+              <tr><td class="py-2.5 text-robo font-bold">PB0</td><td>MOT_EN</td><td>Общее разрешение работы драйверов TMC2209</td></tr>
+              <tr><td class="py-2.5 text-robo font-bold">PA0 / PA4</td><td>STEP_X / DIR_X</td><td>Импульсы шага и направление заднего левого мотора</td></tr>
+              <tr><td class="py-2.5 text-robo font-bold">PA1 / PA5</td><td>STEP_Y / DIR_Y</td><td>Импульсы шага и направление переднего левого мотора</td></tr>
+              <tr><td class="py-2.5 text-robo font-bold">PA2 / PA6</td><td>STEP_Z / DIR_Z</td><td>Импульсы шага и направление заднего правого мотора</td></tr>
+              <tr><td class="py-2.5 text-robo font-bold">PA3 / PA7</td><td>STEP_A / DIR_A</td><td>Импульсы шага и направление переднего правого мотора</td></tr>
+              <tr><td class="py-2.5 text-robo font-bold">PA8</td><td>LED_DIN</td><td>Сигнальная линия адресной светодиодной ленты индикации</td></tr>
+              <tr><td class="py-2.5 text-robo font-bold">PB6 / PB7</td><td>I2C1_SCL / SDA</td><td>Аппаратная шина I2C инерциального датчика MPU-6050</td></tr>
+              <tr><td class="py-2.5 text-robo font-bold">PA9 / PA10</td><td>USART1_TX / RX</td><td>Последовательный интерфейс связи с круговым лидаром 360°</td></tr>
+              <tr><td class="py-2.5 text-robo font-bold">PB8 / PB9</td><td>SONAR_TRIG / ECHO</td><td>Сигналы опроса 4 ультразвуковых датчиков расстояния HC-SR04</td></tr>
+              <tr><td class="py-2.5 text-robo font-bold">PC13</td><td>STATUS_LED</td><td>Светодиодный индикатор состояния контроллера</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="lg:col-span-4 bg-graphite border border-zinc-800 rounded-2xl p-6 space-y-4">
+          <h3 class="text-lg font-extrabold text-white">Разводка питания (KiCad)</h3>
+          <p class="text-sm text-zinc-300 leading-relaxed">
+            Электрическая схема построена с разделением на независимые функциональные контуры через плату распределения <strong class="text-white">PDB-XT60</strong>:
+          </p>
+          <ul class="space-y-3 text-sm text-zinc-300">
+            <li>• <strong class="text-robo">Силовая шина (12 В / 24 В):</strong> подаёт питание от разъёма XT60 непосредственно на плату коммутации драйверов TMC2209 и обмотки шаговых двигателей NEMA 17.</li>
+            <li>• <strong class="text-robo">Логическая шина (5 В и 3.3 В):</strong> питает одноплатный компьютер Raspberry Pi 5, стереокамеру OpenCV, круговой лидар, сонары HC-SR04, контроллер STM32 и радиомодуль LoRa Meshtastic.</li>
+            <li>• <strong class="text-white">Безопасность:</strong> драйверы установлены в разъёмные колодки и меняются за 15 минут при отключённом силовом разъёме XT60.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- ВКЛАДКА 3: Конструкция в САПР КОМПАС-3D и единый цикл с манипулятором -->
+      <div id="tabContent-cad" class="hidden grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- 4 карточки с чертежами и 3D-моделями КОМПАС-3D -->
+        <div class="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="bg-graphite border border-zinc-800 rounded-xl p-3.5">
+            <img src="IMG_20261111_164344_976_1243bc.jpg" onerror="this.src='https://placehold.co/600x400/1b1b1e/ff6600?text=КОМПАС-3D:+Колесо+Mecanum'" alt="Колесо Mecanum в КОМПАС-3D" class="w-full h-44 object-contain rounded-lg bg-carbon"/>
+            <p class="text-xs font-mono text-zinc-300 mt-2.5 text-center font-semibold">Рис. 1 — Колесо Mecanum (твердотельная модель)</p>
+          </div>
+          <div class="bg-graphite border border-zinc-800 rounded-xl p-3.5">
+            <img src="IMG_20261111_164343_994_1243bc.jpg" onerror="this.src='https://placehold.co/600x400/1b1b1e/ff6600?text=КОМПАС-3D:+Крышка+колеса'" alt="Крышка колеса в КОМПАС-3D" class="w-full h-44 object-contain rounded-lg bg-carbon"/>
+            <p class="text-xs font-mono text-zinc-300 mt-2.5 text-center font-semibold">Рис. 2 — Защитная крышка колеса (от пыли)</p>
+          </div>
+          <div class="bg-graphite border border-zinc-800 rounded-xl p-3.5">
+            <img src="IMG_20261111_164336_401_1243bc.jpg" onerror="this.src='https://placehold.co/600x400/1b1b1e/ff6600?text=КОМПАС-3D:+Корпус+крышка'" alt="Корпус крышка чертёж в КОМПАС-3D" class="w-full h-44 object-contain rounded-lg bg-carbon"/>
+            <p class="text-xs font-mono text-zinc-300 mt-2.5 text-center font-semibold">Рис. 3 — Корпус крышка (конструкторский чертёж)</p>
+          </div>
+          <div class="bg-graphite border border-zinc-800 rounded-xl p-3.5">
+            <img src="IMG_20261111_164332_889_1243bc.jpg" onerror="this.src='https://placehold.co/600x400/1b1b1e/ff6600?text=КОМПАС-3D:+Корпус+основание'" alt="Корпус основание чертёж в КОМПАС-3D" class="w-full h-44 object-contain rounded-lg bg-carbon"/>
+            <p class="text-xs font-mono text-zinc-300 mt-2.5 text-center font-semibold">Рис. 4 — Корпус основание (чертёж 400×250 мм)</p>
+          </div>
+        </div>
+
+        <!-- Карточка симуляции в Gazebo Sim и JSON-протокола -->
+        <div class="lg:col-span-5 bg-graphite border border-zinc-800 rounded-2xl p-5 flex flex-col justify-between space-y-4">
+          <div class="space-y-3">
+            <span class="text-xs font-mono text-robo uppercase font-bold">Интеграция в цеху • Gazebo Sim</span>
+            <h3 class="text-lg font-extrabold text-white">Работа в едином цикле с манипулятором</h3>
+            <p class="text-xs sm:text-sm text-zinc-300 leading-relaxed">
+              В среде <strong class="text-white">Gazebo Sim</strong> отработана цифровая модель взаимодействия нашей мобильной платформы с конвейером и манипулятором, оснащённым модулем зрения <strong class="text-white">OpenCV Object Detector + Tesseract OCR (точность 92.4%)</strong>.
+            </p>
+            <img src="IMG_20261111_164328_269_1243bc.jpg" onerror="this.src='https://placehold.co/800x450/1b1b1e/ff6600?text=Gazebo+Sim:+Единый+цикл+с+манипулятором'" alt="Симуляция в Gazebo Sim" class="w-full h-48 object-contain rounded-xl bg-carbon border border-zinc-800"/>
+          </div>
+
+          <div class="bg-carbon border border-zinc-800 rounded-xl p-3">
+            <div class="text-[11px] font-mono text-robo mb-1">JSON-протокол обмена данными (OpenCV → Платформа):</div>
+            <pre class="text-[11px] font-mono text-zinc-300 overflow-x-auto leading-tight">{
+  "schema_version": 1,
+  "source": {"type": "camera", "device": "/dev/video0"},
+  "objects": [{"object": 1, "center_px": {"x": 481, "y": 298},
+  "content": "signed", "text": {"value": "Д12", "confidence": 92.4}}]
+}</pre>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- 4. СРАВНЕНИЕ С 5 КОНКУРЕНТАМИ -->
+  <section id="competitors" class="py-16 lg:py-24 border-b border-zinc-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+      
+      <div>
+        <span class="text-robo font-mono text-sm font-bold uppercase tracking-wider">Раздел 3 • Конкурентный анализ</span>
+        <h2 class="text-3xl sm:text-4xl font-black text-white mt-1">
+          Сравнение с 5 роботами-доставщиками (РФ и мир)
+        </h2>
+      </div>
+
+      <div class="overflow-x-auto rounded-2xl border border-zinc-800 shadow-2xl">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="bg-graphite text-zinc-300 text-xs sm:text-sm font-mono border-b border-zinc-700">
+              <th class="p-4">Система / Производитель</th>
+              <th class="p-4">Ориентировочная цена</th>
+              <th class="p-4">Функционал и связь</th>
+              <th class="p-4">Ремонтопригодность и настройка</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-zinc-800 text-sm">
+            <tr class="bg-robo/15 border-l-4 border-robo">
+              <td class="p-4 font-black text-robo">Наша платформа 4WD</td>
+              <td class="p-4 font-mono font-extrabold text-white">~40 000 руб. (себестоимость)</td>
+              <td class="p-4 text-white">Цеховая доставка, стереозрение OpenCV, Wi-Fi (SSH) + резерв LoRa, рой машинок, единый цикл с манипулятором</td>
+              <td class="p-4 text-emerald-400 font-semibold">Максимальная: 3D-печать PETG, замена стандартных модулей за 15 мин без пайки, своё приложение</td>
+            </tr>
+            <tr class="bg-carbon hover:bg-graphite/60 transition">
+              <td class="p-4 font-bold text-white">1. Яндекс Ровер (Россия)</td>
+              <td class="p-4 font-mono text-zinc-400">Не продаётся (только сервис)</td>
+              <td class="p-4 text-zinc-300">Городской уличный курьер до 25 кг (не для цеха и не для стыковки со станками)</td>
+              <td class="p-4 text-zinc-400">Закрытая проприетарная система, ремонт и обслуживание только внутри Яндекса</td>
+            </tr>
+            <tr class="bg-graphite/30 hover:bg-graphite/60 transition">
+              <td class="p-4 font-bold text-white">2. Waybot Robotics (Россия)</td>
+              <td class="p-4 font-mono text-zinc-300">от 1 800 000 руб.</td>
+              <td class="p-4 text-zinc-300">Доставка внутри зданий по широким коридорам; связь по Wi-Fi</td>
+              <td class="p-4 text-zinc-400">Средняя: фирменные узлы, сервисное обслуживание через производителя</td>
+            </tr>
+            <tr class="bg-carbon hover:bg-graphite/60 transition">
+              <td class="p-4 font-bold text-white">3. YaCu Robotics CarGo (Россия)</td>
+              <td class="p-4 font-mono text-zinc-300">от 2 400 000 руб.</td>
+              <td class="p-4 text-zinc-300">Складская перевозка до 300 кг (избыточна для лёгких приборных табличек)</td>
+              <td class="p-4 text-zinc-400">Средняя: требует внешней интеграции и дорогостоящих комплектующих</td>
+            </tr>
+            <tr class="bg-graphite/30 hover:bg-graphite/60 transition">
+              <td class="p-4 font-bold text-white">4. Starship Technologies (Эстония/США)</td>
+              <td class="p-4 font-mono text-zinc-400">Не продаётся в РФ (подписка)</td>
+              <td class="p-4 text-zinc-300">Компактный уличный доставщик до 15 кг (закрытая зарубежная платформа)</td>
+              <td class="p-4 text-zinc-400">Критически низкая: нет поставок и сервиса в РФ, проприетарные узлы</td>
+            </tr>
+            <tr class="bg-carbon hover:bg-graphite/60 transition">
+              <td class="p-4 font-bold text-white">5. Keenon Robotics (Китай)</td>
+              <td class="p-4 font-mono text-zinc-300">от 1 400 000 руб.</td>
+              <td class="p-4 text-zinc-300">Доставка внутри помещений; только Wi-Fi и привязка к облаку производителя</td>
+              <td class="p-4 text-zinc-400">Низкая: закрытое ПО, дорогие оригинальные запчасти из Китая</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- 5. ЭКОНОМИЧЕСКИЙ ЭФФЕКТ И ИНТЕРАКТИВНЫЙ КАЛЬКУЛЯТОР ОКУПАЕМОСТИ -->
+  <section id="calculator" class="py-16 lg:py-24 border-b border-zinc-800 bg-graphite/40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+      
+      <div class="max-w-3xl">
+        <span class="text-robo font-mono text-sm font-bold uppercase tracking-wider">Раздел 4 • Технико-экономическое обоснование</span>
+        <h2 class="text-3xl sm:text-4xl font-black text-white mt-1">
+          Расчёт экономии и срока окупаемости внедрения
+        </h2>
+        <p class="text-zinc-300 text-sm sm:text-base mt-2">
+          Настройте количество платформ 4WD, сменность участка, ставку ФОТ и снижение потерь от брака/пересортицы для автоматического пересчёта окупаемости.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+        
+        <!-- Ползунки калькулятора -->
+        <div class="lg:col-span-6 bg-graphite border border-zinc-800 rounded-2xl p-6 sm:p-8 space-y-6">
+          
+          <div class="space-y-2">
+            <div class="flex justify-between text-sm font-bold">
+              <span class="text-zinc-200">Количество мобильных платформ 4WD:</span>
+              <span id="calcRobotsLabel" class="font-mono text-robo text-base">1 шт.</span>
+            </div>
+            <input type="range" id="calcRobotsInput" min="1" max="10" step="1" value="1" oninput="recalcROI()">
+            <div class="flex justify-between text-xs text-zinc-500 font-mono">
+              <span>1 машинка (40 тыс. руб.)</span>
+              <span>Рой: 5 шт.</span>
+              <span>Рой: 10 шт.</span>
+            </div>
+          </div>
+
+          <div class="space-y-2">
+            <div class="flex justify-between text-sm font-bold">
+              <span class="text-zinc-200">Количество смен работы участка:</span>
+              <span id="calcShiftsLabel" class="font-mono text-robo text-base">1 смена (22 дня/мес)</span>
+            </div>
+            <input type="range" id="calcShiftsInput" min="1" max="2" step="1" value="1" oninput="recalcROI()">
+          </div>
+
+          <div class="space-y-2">
+            <div class="flex justify-between text-sm font-bold">
+              <span class="text-zinc-200">Экономия ФОТ разносчика/оператора в месяц:</span>
+              <span id="calcWageLabel" class="font-mono text-white text-base">60 000 руб./мес</span>
+            </div>
+            <input type="range" id="calcWageInput" min="50000" max="80000" step="5000" value="60000" oninput="recalcROI()">
+          </div>
+
+          <div class="space-y-2">
+            <div class="flex justify-between text-sm font-bold">
+              <span class="text-zinc-200">Снижение потерь на браке и пересортице:</span>
+              <span id="calcScrapLabel" class="font-mono text-white text-base">12 000 руб./мес</span>
+            </div>
+            <input type="range" id="calcScrapInput" min="10000" max="25000" step="1000" value="12000" oninput="recalcROI()">
+          </div>
+
+        </div>
+
+        <!-- Карточки результатов расчёта -->
+        <div class="lg:col-span-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+          
+          <div class="bg-carbon border-2 border-robo rounded-2xl p-6">
+            <div class="text-xs font-mono uppercase text-robo font-bold">Себестоимость наших платформ</div>
+            <div id="calcOurCost" class="text-3xl sm:text-4xl font-black text-white mt-2">40 000 руб.</div>
+            <div id="calcCompetitorCost" class="text-xs text-zinc-400 mt-2">
+              Рыночные аналоги: <span class="line-through text-zinc-300">1 800 000 руб.</span> (в 45 раз дороже)
+            </div>
+          </div>
+
+          <div class="bg-carbon border border-zinc-800 rounded-2xl p-6">
+            <div class="text-xs font-mono uppercase text-zinc-400 font-bold">Расчётный срок окупаемости</div>
+            <div id="calcPayback" class="text-3xl sm:text-4xl font-black text-robo mt-2">17 дней</div>
+            <div class="text-xs text-zinc-400 mt-2">
+              Менее 1 месяца эксплуатации в цеху
+            </div>
+          </div>
+
+          <div class="bg-graphite border border-zinc-800 rounded-2xl p-6">
+            <div class="text-xs font-mono uppercase text-zinc-400 font-bold">Ежемесячная экономия</div>
+            <div id="calcMonthlySave" class="text-2xl sm:text-3xl font-black text-emerald-400 mt-2">72 000 руб./мес</div>
+            <div class="text-xs text-zinc-400 mt-1">
+              ФОТ (55–65 тыс.) + исключение пересортицы (10–15 тыс.)
+            </div>
+          </div>
+
+          <div class="bg-graphite border border-zinc-800 rounded-2xl p-6">
+            <div class="text-xs font-mono uppercase text-zinc-400 font-bold">Чистый эффект за 1 год</div>
+            <div id="calcYearlySave" class="text-2xl sm:text-3xl font-black text-white mt-2">824 000 руб./год</div>
+            <div class="text-xs text-zinc-400 mt-1">
+              За вычетом затрат на сборку платформ
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. РЕСУРСЫ, СТАТУС ПРОЕКТА И ПАРАМЕТРЫ РЫНКА -->
+  <section id="resources" class="py-16 lg:py-24 border-b border-zinc-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+      
+      <div>
+        <span class="text-robo font-mono text-sm font-bold uppercase tracking-wider">Раздел 5 • Ресурсы, Статус проекта и Рынок</span>
+        <h2 class="text-3xl sm:text-4xl font-black text-white mt-1">
+          Текущий статус разработки и потенциал масштабирования
+        </h2>
+      </div>
+
+      <!-- Честный статус проекта и ресурсы команды -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div class="bg-graphite border-2 border-robo rounded-2xl p-6 sm:p-8 space-y-4">
+          <div class="text-xs font-mono uppercase text-robo font-bold">Честный статус проекта и ресурсы</div>
+          <h3 class="text-2xl font-black text-white">Прототип на этапе доработки и испытаний</h3>
+          <p class="text-sm sm:text-base text-zinc-300 leading-relaxed">
+            Внешнее венчурное финансирование — <strong class="text-white">0 руб.</strong> У команды ограниченный бюджет: самостоятельное привлечение средств затруднено ввиду малого возраста участников проекта, поэтому действующий прототип мобильной платформы 4WD собран полностью своими силами.
+          </p>
+          <p class="text-sm sm:text-base text-zinc-300 leading-relaxed">
+            При этом у команды уже есть полностью готовая инженерная архитектура, конструкторские чертежи в САПР КОМПАС-3D, разведённая электрическая схема в KiCad, протестированные алгоритмы компьютерного зрения OpenCV и чёткие инженерные идеи по дальнейшему развитию (координация роя машинок по Wi-Fi SSH, переход на 24 В и станция автоматической подзарядки).
+          </p>
+        </div>
+
+        <!-- Параметры рынка TAM / SAM / SOM -->
+        <div class="grid grid-cols-1 gap-4">
+          <div class="bg-graphite border border-zinc-800 rounded-2xl p-5 flex items-center justify-between gap-4">
+            <div>
+              <div class="text-xs font-mono text-robo font-bold uppercase">TAM • Общий рынок (РФ и СНГ)</div>
+              <div class="text-sm text-zinc-300 mt-1">Внутрицеховая мобильная робототехника и автоматизация доставки на заводах РФ и СНГ</div>
+            </div>
+            <div class="text-2xl sm:text-3xl font-black text-white whitespace-nowrap">18 000 млн руб.</div>
+          </div>
+
+          <div class="bg-graphite border border-zinc-800 rounded-2xl p-5 flex items-center justify-between gap-4">
+            <div>
+              <div class="text-xs font-mono text-robo font-bold uppercase">SAM • Доступный рынок</div>
+              <div class="text-sm text-zinc-300 mt-1">Компактные цеховые роботы-доставщики 4WD для приборостроения и сборочных линий</div>
+            </div>
+            <div class="text-2xl sm:text-3xl font-black text-white whitespace-nowrap">3 200 млн руб.</div>
+          </div>
+
+          <div class="bg-robo text-carbon rounded-2xl p-5 flex items-center justify-between gap-4">
+            <div>
+              <div class="text-xs font-mono font-extrabold uppercase">SOM • Реально достижимый рынок (3 года)</div>
+              <div class="text-sm font-semibold mt-1">Поставка 500–600 бюджетных платформ 4WD (включая роевые комплекты по 3–5 машинок)</div>
+            </div>
+            <div class="text-2xl sm:text-3xl font-black whitespace-nowrap">45 млн руб.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- 7. КОМАНДА ПРОЕКТА (6 РЕАЛЬНЫХ ФОТОГРАФИЙ С РЕДАКТИРУЕМЫМИ ПОЛЯМИ) -->
+  <section id="team" class="py-16 lg:py-24 border-b border-zinc-800 bg-graphite/30">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+      
+      <div>
+        <span class="text-robo font-mono text-sm font-bold uppercase tracking-wider">Раздел 6 • Команда</span>
+        <h2 class="text-3xl sm:text-4xl font-black text-white mt-1">
+          Команда разработчиков проекта
+        </h2>
+        <p class="text-sm text-zinc-400 mt-1">
+          Поля <span class="text-robo font-mono">ФИО / Роль / Опыт</span> интерактивны — кликните по тексту в любой карточке, чтобы вписать данные участников.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Участник 1 -->
+        <div class="bg-graphite border border-zinc-800 rounded-2xl p-4 flex gap-4 items-center">
+          <img src="IMG_0930.jpg" onerror="this.src='https://placehold.co/200x260/242429/ff6600?text=Участник+1'" alt="Участник команды 1" class="w-24 h-32 object-cover rounded-xl flex-shrink-0 border border-zinc-700"/>
+          <div class="space-y-1.5 text-sm w-full">
+            <div contenteditable="true" class="font-extrabold text-robo">ФИО: ________________</div>
+            <div contenteditable="true" class="font-semibold text-white">Роль: ________________</div>
+            <div contenteditable="true" class="text-zinc-300 text-xs">Опыт: ________________</div>
+          </div>
+        </div>
+
+        <!-- Участник 2 -->
+        <div class="bg-graphite border border-zinc-800 rounded-2xl p-4 flex gap-4 items-center">
+          <img src="IMG_0931.jpg" onerror="this.src='https://placehold.co/200x260/242429/ff6600?text=Участник+2'" alt="Участник команды 2" class="w-24 h-32 object-cover rounded-xl flex-shrink-0 border border-zinc-700"/>
+          <div class="space-y-1.5 text-sm w-full">
+            <div contenteditable="true" class="font-extrabold text-robo">ФИО: ________________</div>
+            <div contenteditable="true" class="font-semibold text-white">Роль: ________________</div>
+            <div contenteditable="true" class="text-zinc-300 text-xs">Опыт: ________________</div>
+          </div>
+        </div>
+
+        <!-- Участник 3 -->
+        <div class="bg-graphite border border-zinc-800 rounded-2xl p-4 flex gap-4 items-center">
+          <img src="IMG_0932.jpg" onerror="this.src='https://placehold.co/200x260/242429/ff6600?text=Участник+3'" alt="Участник команды 3" class="w-24 h-32 object-cover rounded-xl flex-shrink-0 border border-zinc-700"/>
+          <div class="space-y-1.5 text-sm w-full">
+            <div contenteditable="true" class="font-extrabold text-robo">ФИО: ________________</div>
+            <div contenteditable="true" class="font-semibold text-white">Роль: ________________</div>
+            <div contenteditable="true" class="text-zinc-300 text-xs">Опыт: ________________</div>
+          </div>
+        </div>
+
+        <!-- Участник 4 -->
+        <div class="bg-graphite border border-zinc-800 rounded-2xl p-4 flex gap-4 items-center">
+          <img src="IMG_0934.jpg" onerror="this.src='https://placehold.co/200x260/242429/ff6600?text=Участник+4'" alt="Участник команды 4" class="w-24 h-32 object-cover rounded-xl flex-shrink-0 border border-zinc-700"/>
+          <div class="space-y-1.5 text-sm w-full">
+            <div contenteditable="true" class="font-extrabold text-robo">ФИО: ________________</div>
+            <div contenteditable="true" class="font-semibold text-white">Роль: ________________</div>
+            <div contenteditable="true" class="text-zinc-300 text-xs">Опыт: ________________</div>
+          </div>
+        </div>
+
+        <!-- Участник 5 -->
+        <div class="bg-graphite border border-zinc-800 rounded-2xl p-4 flex gap-4 items-center">
+          <img src="IMG_0936.jpg" onerror="this.src='https://placehold.co/200x260/242429/ff6600?text=Участник+5'" alt="Участник команды 5" class="w-24 h-32 object-cover rounded-xl flex-shrink-0 border border-zinc-700"/>
+          <div class="space-y-1.5 text-sm w-full">
+            <div contenteditable="true" class="font-extrabold text-robo">ФИО: ________________</div>
+            <div contenteditable="true" class="font-semibold text-white">Роль: ________________</div>
+            <div contenteditable="true" class="text-zinc-300 text-xs">Опыт: ________________</div>
+          </div>
+        </div>
+
+        <!-- Участник 6 -->
+        <div class="bg-graphite border border-zinc-800 rounded-2xl p-4 flex gap-4 items-center">
+          <img src="IMG_0940.jpg" onerror="this.src='https://placehold.co/200x260/242429/ff6600?text=Участник+6'" alt="Участник команды 6" class="w-24 h-32 object-cover rounded-xl flex-shrink-0 border border-zinc-700"/>
+          <div class="space-y-1.5 text-sm w-full">
+            <div contenteditable="true" class="font-extrabold text-robo">ФИО: ________________</div>
+            <div contenteditable="true" class="font-semibold text-white">Роль: ________________</div>
+            <div contenteditable="true" class="text-zinc-300 text-xs">Опыт: ________________</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-graphite border border-zinc-800 rounded-xl p-4 text-sm">
+        <span class="text-robo font-bold">Внешние советники, консультанты, менторы:</span>
+        <span contenteditable="true" class="ml-2 text-zinc-200">____________________________________________________________________</span>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- 8. КОНТАКТЫ (ФУТЕР БЕЗ КНОПКИ «ЗАКАЗАТЬ ПИЛОТ») -->
+  <footer id="contact" class="bg-carbon py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+        
+        <div class="lg:col-span-8 space-y-6">
+          <div class="flex items-center gap-4">
+            <svg width="48" height="48" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" class="rounded-lg flex-shrink-0">
+              <rect width="100" height="100" fill="#ff6600"/>
+              <polygon points="18,20 46,20 31,35 18,35" fill="#111111"/>
+              <polygon points="55,20 82,20 82,35 58,35 58,82 42,82 42,33" fill="#111111"/>
+            </svg>
+            <div>
+              <span class="text-robo font-mono text-xs uppercase font-bold">Раздел 7 • Контакты</span>
+              <h2 class="text-2xl sm:text-3xl font-black text-white">Контактная информация проекта</h2>
+            </div>
+          </div>
+
+          <div class="bg-graphite border border-zinc-800 rounded-2xl p-6 space-y-3.5 text-sm sm:text-base">
+            <div>
+              <strong class="text-robo">1. ФИО контактного лица:</strong>
+              <span contenteditable="true" class="ml-2 text-white">________________________________________</span>
+            </div>
+            <div>
+              <strong class="text-robo">2. Номер телефона и почта:</strong>
+              <span contenteditable="true" class="ml-2 text-white">+7 (___) ___-__-__ • ____________@______</span>
+            </div>
+            <div>
+              <strong class="text-robo">3. Сайт и материалы проекта:</strong>
+              <span contenteditable="true" class="ml-2 text-zinc-200 font-mono">https://robo74.ru/ • GitHub: OpenCV-Object-Detector</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- QR-код проекта -->
+        <div class="lg:col-span-4 bg-white text-carbon rounded-2xl p-6 flex flex-col items-center justify-center text-center">
+          <svg width="148" height="148" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <rect width="100" height="100" fill="#ffffff"/>
+            <rect x="8" y="8" width="26" height="26" fill="none" stroke="#111111" stroke-width="6"/>
+            <rect x="15" y="15" width="12" height="12" fill="#111111"/>
+            <rect x="66" y="8" width="26" height="26" fill="none" stroke="#111111" stroke-width="6"/>
+            <rect x="73" y="15" width="12" height="12" fill="#111111"/>
+            <rect x="8" y="66" width="26" height="26" fill="none" stroke="#111111" stroke-width="6"/>
+            <rect x="15" y="73" width="12" height="12" fill="#111111"/>
+            <rect x="42" y="10" width="6" height="18" fill="#111111"/>
+            <rect x="52" y="16" width="6" height="12" fill="#ff6600"/>
+            <rect x="42" y="36" width="16" height="6" fill="#111111"/>
+            <rect x="12" y="44" width="18" height="6" fill="#111111"/>
+            <rect x="38" y="48" width="12" height="12" fill="#ff6600"/>
+            <rect x="58" y="44" width="14" height="6" fill="#111111"/>
+            <rect x="78" y="42" width="12" height="16" fill="#111111"/>
+            <rect x="42" y="68" width="10" height="22" fill="#111111"/>
+            <rect x="58" y="64" width="16" height="10" fill="#111111"/>
+            <rect x="78" y="70" width="14" height="20" fill="#ff6600"/>
+            <rect x="58" y="82" width="14" height="8" fill="#111111"/>
+          </svg>
+          <span class="font-extrabold text-sm mt-2 text-carbon">QR-код проекта</span>
+        </div>
+
+      </div>
+
+      <div class="border-t border-zinc-800 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-zinc-500">
+        <span>Автономная мобильная платформа для внутрицеховой логистики • Челябинск, 2026 г.</span>
+        <span class="font-mono text-robo">GreenTech Устойчивое развитие 2026</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- СКРИПТЫ: ЛОКАЛЬНАЯ ЗАГРУЗКА ФОТО МАШИНКИ, ВКЛАДКИ И КАЛЬКУЛЯТОР ОКУПАЕМОСТИ -->
+  <script>
+    // 1. Отображение выбранного фото машинки в рамке на главном экране
+    const robotPhotoInput = document.getElementById('robotPhotoInput');
+    const uploadedRobotImg = document.getElementById('uploadedRobotImg');
+    const photoPlaceholder = document.getElementById('photoPlaceholder');
+    const resetPhotoBtn = document.getElementById('resetPhotoBtn');
+    const showcaseTitle = document.getElementById('showcaseTitle');
+
+    robotPhotoInput.addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(ev) {
+        uploadedRobotImg.src = ev.target.result;
+        uploadedRobotImg.classList.remove('hidden');
+        photoPlaceholder.classList.add('hidden');
+        resetPhotoBtn.classList.remove('hidden');
+        showcaseTitle.textContent = 'Фотография мобильной платформы 4WD';
+      };
+      reader.readAsDataURL(file);
+    });
+
+    resetPhotoBtn.addEventListener('click', function() {
+      uploadedRobotImg.src = '';
+      uploadedRobotImg.classList.add('hidden');
+      photoPlaceholder.classList.remove('hidden');
+      resetPhotoBtn.classList.add('hidden');
+      robotPhotoInput.value = '';
+      showcaseTitle.textContent = 'Место для фото машинки';
+    });
+
+    // 2. Переключение 3 инженерных вкладок
+    function switchTechTab(tabId) {
+      const tabs = ['calc', 'stm32', 'cad'];
+      const labels = {
+        calc: 'Вкладка 1: Расчёты приводов и питания',
+        stm32: 'Вкладка 2: Распиновка STM32 и питание',
+        cad: 'Вкладка 3: КОМПАС-3D и цикл с манипулятором'
+      };
+      tabs.forEach(t => {
+        const content = document.getElementById('tabContent-' + t);
+        const btn = document.getElementById('tabBtn-' + t);
+        if (t === tabId) {
+          content.classList.remove('hidden');
+          content.classList.add('grid');
+          btn.className = 'px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm bg-robo text-carbon transition';
+        } else {
+          content.classList.add('hidden');
+          content.classList.remove('grid');
+          btn.className = 'px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm bg-graphite text-zinc-300 border border-zinc-800 hover:text-white transition';
+        }
+        btn.textContent = labels[t];
+      });
+    }
+
+    // 3. Интерактивный расчёт экономии и срока окупаемости
+    function recalcROI() {
+      const count = parseInt(document.getElementById('calcRobotsInput').value, 10);
+      const shifts = parseInt(document.getElementById('calcShiftsInput').value, 10);
+      const wage = parseInt(document.getElementById('calcWageInput').value, 10);
+      const scrap = parseInt(document.getElementById('calcScrapInput').value, 10);
+
+      document.getElementById('calcRobotsLabel').textContent = count + (count === 1 ? ' шт.' : ' шт. (Рой)');
+      document.getElementById('calcShiftsLabel').textContent = shifts + (shifts === 1 ? ' смена (22 дня/мес)' : ' смены');
+      document.getElementById('calcWageLabel').textContent = wage.toLocaleString('ru-RU') + ' руб./мес';
+      document.getElementById('calcScrapLabel').textContent = scrap.toLocaleString('ru-RU') + ' руб./мес';
+
+      const ourTotalCost = count * 40000;
+      const compTotalCost = count * 1800000;
+      const monthlySavings = (wage * shifts) + scrap + (count > 1 ? (count - 1) * 20000 : 0);
+      const paybackDays = Math.max(5, Math.round((ourTotalCost / monthlySavings) * 30));
+      const yearlyNet = (monthlySavings * 12) - ourTotalCost;
+
+      document.getElementById('calcOurCost').textContent = ourTotalCost.toLocaleString('ru-RU') + ' руб.';
+      document.getElementById('calcCompetitorCost').innerHTML =
+        'Рыночные аналоги: <span class="line-through text-zinc-300">' + compTotalCost.toLocaleString('ru-RU') + ' руб.</span> (в 45 раз дороже)';
+      document.getElementById('calcPayback').textContent =
+        paybackDays < 30 ? paybackDays + ' дней' : (paybackDays / 30).toFixed(1) + ' мес.';
+      document.getElementById('calcMonthlySave').textContent = monthlySavings.toLocaleString('ru-RU') + ' руб./мес';
+      document.getElementById('calcYearlySave').textContent = yearlyNet.toLocaleString('ru-RU') + ' руб./год';
+    }
+
+    window.onload = function() {
+      recalcROI();
+    };
+  </script>
+</body>
+</html>
