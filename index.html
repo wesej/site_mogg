@@ -38,7 +38,7 @@
       z-index: 100;
       background: rgba(20, 20, 23, 0.96);
       border-bottom: 2px solid var(--accent);
-      padding: 14px 28px;
+      padding: 12px 28px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -48,27 +48,28 @@
     .brand {
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap: 16px;
     }
-    .logo-box {
-      width: 44px;
-      height: 44px;
-      background: var(--accent);
-      color: var(--bg-dark);
-      font-weight: 800;
-      font-size: 26px;
+    .logo-wrap {
+      width: 245px;
+      height: 58px;
+      overflow: hidden;
+      border-radius: 8px;
+      background: #ffffff;
+      border: 1.5px solid var(--accent);
       display: flex;
       align-items: center;
       justify-content: center;
-      border-radius: 8px;
+      flex-shrink: 0;
     }
-    .brand-title {
-      font-weight: 700;
-      font-size: 18px;
-      color: var(--text-main);
+    .logo-wrap img {
+      width: 290px;
+      height: auto;
+      display: block;
     }
     .brand-sub {
-      font-size: 14px;
+      font-size: 15px;
+      font-weight: 700;
       color: var(--accent);
     }
     nav {
@@ -268,11 +269,10 @@
 
   <header>
     <div class="brand">
-      <div class="logo-box">Т</div>
-      <div>
-        <div class="brand-title">Техническое творчество Челябинской области</div>
-        <div class="brand-sub">GreenTech Устойчивое развитие 2026</div>
+      <div class="logo-wrap">
+        <img src="logo.jpg" alt="Техническое творчество Челябинской области" />
       </div>
+      <div class="brand-sub">GreenTech Устойчивое развитие 2026</div>
     </div>
     <nav>
       <a href="#problem">Проблема</a>
@@ -297,7 +297,7 @@
         <h1>Автономная мобильная платформа для производственной логистики</h1>
         <p>
           Полноприводный робот 4WD со всенаправленными колёсами, компьютерным зрением OpenCV,
-          управлением по сети Wi-Fi (SSH) и резервным радиоканалу Meshtastic для автоматической доставки грузов.
+          управлением по сети Wi-Fi (SSH) и резервным радиоканалом Meshtastic для автоматической доставки грузов.
         </p>
       </div>
       <div class="hero-photo-card">
