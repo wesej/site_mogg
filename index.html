@@ -216,7 +216,7 @@
       padding: 18px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
     }
     .team-card img {
       width: 100%;
@@ -232,13 +232,24 @@
       color: var(--text-main);
     }
     .team-role {
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 700;
       color: var(--accent);
     }
     .team-desc {
-      font-size: 16px;
+      font-size: 15px;
       color: var(--text-main);
+      line-height: 1.45;
+    }
+    .team-exp {
+      font-size: 14.5px;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border);
+      padding-top: 8px;
+      line-height: 1.45;
+    }
+    .team-exp strong {
+      color: var(--accent);
     }
     footer {
       border-top: 2px solid var(--accent);
@@ -522,56 +533,64 @@
     <section id="team">
       <div class="section-header">
         <h2>Команда</h2>
-        <p>Инженерная команда проекта и наставники</p>
+        <p>Инженерная команда проекта (опыт разработки 3–4 года) и наставники</p>
       </div>
       <div class="team-grid">
         <div class="team-card">
           <img src="kirill_gavrilov.jpg" alt="Гаврилов Кирилл Александрович" />
           <div class="team-name">Гаврилов Кирилл Александрович</div>
-          <div class="team-role">Инженер-электроник</div>
-          <div class="team-desc">Схема в KiCad, плата питания PDB, драйверы TMC2209 (600 мА).</div>
+          <div class="team-role">Инженер-электроник (опыт 3–4 года)</div>
+          <div class="team-desc">В проекте: Принципиальная схема в KiCad, плата питания PDB, настройка драйверов TMC2209 (600 мА).</div>
+          <div class="team-exp"><strong>Опыт:</strong> Монтаж, распайка и отладка внутренних электронных узлов в проекте макета ледокола «Екатерина Великая».</div>
         </div>
         <div class="team-card">
           <img src="kolya.jpg" alt="Исламов Николай Олегович" />
           <div class="team-name">Исламов Николай Олегович</div>
-          <div class="team-role">Сетевой инженер</div>
-          <div class="team-desc">Связь по Wi-Fi (SSH), резервный радиоканал Meshtastic и работа роя.</div>
+          <div class="team-role">Сетевой инженер (опыт 3–4 года)</div>
+          <div class="team-desc">В проекте: Связь по Wi-Fi (SSH), резервный радиоканал Meshtastic и сетевая координация роя.</div>
+          <div class="team-exp"><strong>Опыт:</strong> Разработка техдокументации, инженерные расчеты и работа со сканирующим оборудованием в проекте макета ледокола «Екатерина Великая».</div>
         </div>
         <div class="team-card">
           <img src="danil.jpg" alt="Пушкарёв Данил" />
           <div class="team-name">Пушкарёв Данил</div>
-          <div class="team-role">Инженер-конструктор</div>
-          <div class="team-desc">3D-модели корпуса и колёс, прочностной расчет шасси из PETG.</div>
+          <div class="team-role">Инженер-конструктор (опыт 3–4 года)</div>
+          <div class="team-desc">В проекте: 3D-модели корпуса и колёс Илона Маска, прочностной расчет шасси из PETG.</div>
+          <div class="team-exp"><strong>Опыт:</strong> твердотельное 3D-моделирование в САПР КОМПАС-3D и компьютерная симуляция в проекте промышленной автоматизации с OpenCV.</div>
         </div>
         <div class="team-card">
           <img src="valera.jpg" alt="Магизов Валерий Ахнявович" />
           <div class="team-name">Магизов Валерий Ахнявович</div>
-          <div class="team-role">Инженер-программист</div>
-          <div class="team-desc">Архитектура ROS 2, прошивка STM32, микрошаг 1/16 и симуляция в Gazebo Sim.</div>
+          <div class="team-role">Инженер-программист (опыт 3–4 года)</div>
+          <div class="team-desc">В проекте: Архитектура ROS 2, прошивка STM32, микрошаг 1/16 и симуляция в Gazebo Sim.</div>
+          <div class="team-exp"><strong>Опыт:</strong> Разработка алгоритмов автономной навигации, локального планирования траектории и динамического обхода препятствий для мобильного робота.</div>
         </div>
         <div class="team-card">
           <img src="kirill_tabakov.png" alt="Табаков Кирилл Дмитриевич" />
           <div class="team-name">Табаков Кирилл Дмитриевич</div>
-          <div class="team-role">ML-инженер</div>
-          <div class="team-desc">Узлы компьютерного зрения OpenCV в среде ROS 2, карта глубины StereoBM/SGBM.</div>
+          <div class="team-role">ML-инженер (опыт 3–4 года)</div>
+          <div class="team-desc">В проекте: Узлы компьютерного зрения OpenCV в среде ROS 2, карта глубины StereoBM/SGBM.</div>
+          <div class="team-exp"><strong>Опыт:</strong> Разработка и калибровка системы четырёхосевого оптического сканирования на базе OpenCV для автоматизации производства.</div>
         </div>
         <div class="team-card">
           <img src="maksim.jpg" alt="Крупин Максим Алексеевич" />
           <div class="team-name">Крупин Максим Алексеевич</div>
-          <div class="team-role">Инженер ПТО</div>
-          <div class="team-desc">Техническая документация, тяговые и тепловые расчеты, экономика.</div>
+          <div class="team-role">Инженер ПТО (опыт 3–4 года)</div>
+          <div class="team-desc">В проекте: Техническая документация, тяговые и тепловые расчеты, экономика внедрения.</div>
+          <div class="team-exp"><strong>Опыт:</strong> Разработка компоновочных чертежей размещения бортовой электроники и работа со сканером в проекте макета ледокола «Екатерина Великая».</div>
         </div>
         <div class="team-card">
           <img src="sasha.jpg" alt="Артемьев Александр Сергеевич" />
           <div class="team-name">Артемьев Александр Сергеевич</div>
-          <div class="team-role">Фулстек-разработчик</div>
-          <div class="team-desc">Веб-интерфейс проекта, панель оператора и визуализация телеметрии.</div>
+          <div class="team-role">Фулстек-разработчик (опыт 3–4 года)</div>
+          <div class="team-desc">В проекте: Веб-интерфейс проекта, панель оператора и визуализация телеметрии.</div>
+          <div class="team-exp"><strong>Опыт:</strong> Проектирование и разработка ряда полнофункциональных веб-приложений и клиент-серверных интерфейсов.</div>
         </div>
         <div class="team-card">
           <img src="damiryan.png" alt="Ахмедзянов Дамирьян Закирьянович" />
           <div class="team-name">Ахмедзянов Дамирьян Закирьянович</div>
           <div class="team-role">Наставник и ментор проекта</div>
-          <div class="team-desc">Консультант: Лебедь Виталий — главный начальник производства.</div>
+          <div class="team-desc">Инженерно-техническое руководство и сопровождение разработки.</div>
+          <div class="team-exp"><strong>Консультант:</strong> Лебедь Виталий — главный начальник производства (экспертиза промышленного внедрения).</div>
         </div>
       </div>
     </section>
